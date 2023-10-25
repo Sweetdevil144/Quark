@@ -2,65 +2,99 @@ package lexer
 
 import "Quark/token"
 
+// Lexer struct defines the structure for our lexical analyzer.
 type Lexer struct {
-	input        string
-	position     int
-	ch           byte
-	readPosition int
+	input        string // The input string being analyzed
+	position     int    // Current position in the input (points to current char)
+	char         byte   // Current char under examination
+	readPosition int    // Next reading position in the input (after current char)
 }
 
+// New initializes a new Lexer with the input and prepares it to parse.
+func New(inputString string) *Lexer {
+	l := &Lexer{input: inputString}
+	l.readChar() // Initialize reading the first character
+	return l
+}
+
+// NextToken is the primary method for tokenizing the input string.
+// It skips whitespace and identifies the correct token type,
+// returning a single token each time it's called.
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+
 	l.skipWhitespace()
-	switch l.ch {
+
+	switch l.char {
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
+		tok = newToken(token.ASSIGN, l.char)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		tok = newToken(token.SEMICOLON, l.char)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch)
+		tok = newToken(token.LPAREN, l.char)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch)
+		tok = newToken(token.RPAREN, l.char)
 	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		tok = newToken(token.COMMA, l.char)
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tok = newToken(token.PLUS, l.char)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tok = newToken(token.LBRACE, l.char)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tok = newToken(token.RBRACE, l.char)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
-		//default:
-		//	tok = newToken(token.ILLEGAL, l.ch)
+	default:
+		if isLetter(l.char) {
+			tok.Literal = l.readIdentifier()
+			// tok.TypeOfToken = token.LookupIdent(tok.Literal)
+			return tok
+		} else {
+			tok = newToken(token.ILLEGAL, l.char)
+		}
 	}
+
 	l.readChar()
 	return tok
 }
 
-func newToken(tokenType token.TokenType, ch byte) token.Token {
+// isLetter checks whether a character is a letter or underscore,
+// which are allowed in identifiers.
+func isLetter(ch byte) bool {
+	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
+}
+
+// readIdentifier reads in an identifier from the current position
+// until a non-letter character is encountered.
+func (l *Lexer) readIdentifier() string {
+	startPosition := l.position
+	for isLetter(l.char) {
+		l.readChar()
+	}
+	return l.input[startPosition:l.position]
+}
+
+// newToken creates a new token of the given token type and literal value.
+func newToken(tokenType token.TypeOfToken, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// readChar advances the current read position in the input string.
+// It handles the end of input by setting 'char' to 0, which signifies EOF.
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
-		l.ch = 0
+		l.char = 0 // EOF
 	} else {
-		l.ch = l.input[l.readPosition]
+		l.char = l.input[l.readPosition]
 	}
 	l.position = l.readPosition
-	l.readPosition += 1
+	l.readPosition++
 }
 
+// skipWhitespace advances the read position past any whitespace characters.
 func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+	for l.char == ' ' || l.char == '\t' || l.char == '\n' || l.char == '\r' {
 		l.readChar()
 	}
-}
-
-func New(input string) *Lexer {
-	l := &Lexer{input: input}
-	l.readChar()
-	return l
 }
