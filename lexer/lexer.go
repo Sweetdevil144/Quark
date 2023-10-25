@@ -17,10 +17,10 @@ func New(inputString string) *Lexer {
 	return l
 }
 
-// NextToken is the primary method for tokenizing the input string.
+// TokenizeInputString is the primary method for tokenizing the input string.
 // It skips whitespace and identifies the correct token type,
 // returning a single token each time it's called.
-func (l *Lexer) NextToken() token.Token {
+func (l *Lexer) TokenizeInputString() token.Token {
 	var tok token.Token
 
 	l.skipWhitespace()
@@ -48,7 +48,11 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(l.char) {
 			tok.Literal = l.readIdentifier()
-			// tok.TypeOfToken = token.LookupIdent(tok.Literal)
+			tok.Type = token.LookUpIdentifier(tok.Literal)
+			return tok
+		} else if isDigit(l.char) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.char)
@@ -63,6 +67,18 @@ func (l *Lexer) NextToken() token.Token {
 // which are allowed in identifiers.
 func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
+}
+
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.char) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
 
 // readIdentifier reads in an identifier from the current position
@@ -84,7 +100,8 @@ func newToken(tokenType token.TypeOfToken, ch byte) token.Token {
 // It handles the end of input by setting 'char' to 0, which signifies EOF.
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
-		l.char = 0 // EOF
+		l.char = 0
+		// EOF
 	} else {
 		l.char = l.input[l.readPosition]
 	}
