@@ -42,6 +42,22 @@ func (l *Lexer) TokenizeInputString() token.Token {
 		tok = newToken(token.LBRACE, l.char)
 	case '}':
 		tok = newToken(token.RBRACE, l.char)
+	case '-':
+		tok = newToken(token.MINUS, l.char)
+	case '!':
+		tok = newToken(token.BANG, l.char)
+	case '*':
+		tok = newToken(token.ASTERISK, l.char)
+	case '/':
+		tok = newToken(token.SLASH, l.char)
+	case '%':
+		tok = newToken(token.MOD, l.char)
+	case '<':
+		tok = newToken(token.LT, l.char)
+	case '>':
+		tok = newToken(token.GT, l.char)
+	case ':':
+		tok = newToken(token.COLON, l.char)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF

@@ -23,8 +23,13 @@ const (
 	INT   = "INT"
 
 	// ASSIGN and PLUS represent the assignment operator "=" and the addition operator "+", respectively.
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+	MOD      = "%"
 
 	// COMMA and SEMICOLON are DELIMITERS used in the syntax for separating elements.
 	COMMA     = ","
@@ -64,10 +69,8 @@ const (
 	CASE     = "CASE"
 
 	// LT GT LTE GTE are comparison operators.
-	LT  = "<"
-	GT  = ">"
-	LTE = "<="
-	GTE = ">="
+	LT = "<"
+	GT = ">"
 
 	COLON = "COLON"
 )
@@ -100,10 +103,14 @@ var keywords = map[string]TypeOfToken{
 	"case":     CASE,
 
 	// Added keywords for comparison operators.
-	"<":  LT,
-	">":  GT,
-	"<=": LTE,
-	">=": GTE,
+	"<": LT,
+	">": GT,
+
+	// Added Keywords for Parenthetical tokens.
+	"(": LPAREN,
+	")": RPAREN,
+	"{": LBRACE,
+	"}": RBRACE,
 }
 
 func LookUpIdentifier(ident string) TypeOfToken {
