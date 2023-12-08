@@ -73,6 +73,9 @@ const (
 	GT = ">"
 
 	COLON = "COLON"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 )
 
 var keywords = map[string]TypeOfToken{
@@ -119,4 +122,8 @@ func LookUpIdentifier(ident string) TypeOfToken {
 		return tok
 	}
 	return IDENT
+	// IDENT is return here in case the identifier is not a keyword.
+	// That is, if the identifier is not present in the keywords map.
+	// For ex : "let" is a keyword, so it will be present in the keywords map.
+	// But "foobar" is not a keyword, so it will not be present in the keywords map.
 }
