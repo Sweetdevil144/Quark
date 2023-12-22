@@ -27,6 +27,5 @@ func Start(in io.Reader, out io.Writer) {
 		for tok := l.TokenizeInputString(); tok.Type != token.EOF; tok = l.TokenizeInputString() {
 			fmt.Printf("%+v\n", tok)
 		}
-
 	}
 }
