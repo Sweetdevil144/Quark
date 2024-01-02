@@ -74,8 +74,7 @@ const (
 
 	COLON = "COLON"
 
-	EQ     = "=="
-	NOT_EQ = "!="
+	EQ, NotEq = "==", "!="
 )
 
 var keywords = map[string]TypeOfToken{

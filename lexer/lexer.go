@@ -42,7 +42,7 @@ func (l *Lexer) TokenizeInputString() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.char
 			l.readChar()
-			tok = token.Token{Type: token.NOT_EQ, Literal: string(ch) + string(l.char)}
+			tok = token.Token{Type: token.NotEq, Literal: string(ch) + string(l.char)}
 		} else {
 			tok = newToken(token.BANG, l.char)
 		}

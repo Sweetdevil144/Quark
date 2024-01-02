@@ -46,7 +46,7 @@ func TestNextToken(t *testing.T) {
 		{token.LBRACE, "{"}, {token.RETURN, "return"}, {token.FALSE, "false"},
 		{token.SEMICOLON, ";"}, {token.RBRACE, "}"}, {token.INT, "10"},
 		{token.EQ, "=="}, {token.INT, "10"}, {token.INT, "10"},
-		{token.NOT_EQ, "!="}, {token.INT, "9"},
+		{token.NotEq, "!="}, {token.INT, "9"},
 	}
 
 	l := New(input)
